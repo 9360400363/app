@@ -24,7 +24,11 @@ export default function Register({navigation}) {
     await axios
       .post("http://192.168.29.195:5000/api/auth/register", userData)
       .then((res)=>{
-        console.log('res',res)
+       if(res.status === 201){
+        navigation.navigate('Login')
+       }
+      }).catch((err)=>{
+        console.log('err',err)
       })
   };
 
@@ -109,7 +113,7 @@ export default function Register({navigation}) {
           }}>
           <Text>Already register ?</Text>
           <TouchableOpacity>
-            <Text onPress={''} style={{color: '#AD40AF', fontWeight: '700'}}>
+            <Text  style={{color: '#AD40AF', fontWeight: '700'}}>
               {' '}
               login
             </Text>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   Text,
@@ -7,13 +7,30 @@ import {
   View,
 } from 'react-native';
 
-
 import {useContext} from 'react';
-import AuthProvider, { AuthContext } from '../AuthContext';
+import AuthProvider, {AuthContext} from '../AuthContext';
 import InputField from '../Commponents/InputField';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login({navigation}) {
-  const {login}=useContext(AuthContext)
+  const [logindata, setLogindata] = useState({});
+  const Inputchange = (name, value) => {
+    setLogindata({...logindata, [name]: value});
+  };
+  const handleChange = () => {
+    console.log('res', logindata);
+    const userData = {
+      username: logindata.username,
+      password: logindata.password,
+    };
+    axios.post("http://192.168.29.195:5000/api/auth/login",userData).then((res)=>{
+      if(res.status === 200){
+        AsyncStorage.setItem("token","accesstoken")
+      }
+    })
+  };
+
   return (
     <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
       <View style={{paddingHorizontal: 25}}>
@@ -36,7 +53,11 @@ export default function Login({navigation}) {
             paddingBottom: 8,
             marginBottom: 25,
           }}>
-          <TextInput keyboardType="email-address" placeholder="@ Email" />
+          <TextInput
+            keyboardType="email-address"
+            placeholder="@ Email"
+            onChangeText={val => Inputchange('username', val)}
+          />
         </View>
         <View
           style={{
@@ -46,11 +67,15 @@ export default function Login({navigation}) {
             paddingBottom: 8,
             marginBottom: 25,
           }}>
-          <TextInput secureTextEntry={true} placeholder="password" />
+          <TextInput
+            secureTextEntry={true}
+            placeholder="password"
+            onChangeText={val => Inputchange('password', val)}
+          />
         </View>
-       
+
         <TouchableOpacity
-          onPress={() => {login()}}
+          onPress={() => handleChange()}
           style={{padding: 20, marginBottom: 30, borderRadius: 10}}>
           <Text
             style={{

@@ -5,18 +5,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const AuthContext = createContext();
 import {useEffect} from 'react';
 import {registerApi} from './config';
+import axios from 'axios';
 
 export default function AuthProvider({children}) {
   
   const [userToken, setUserToken] = useState(null);
 
-  const login = () => {
-    
-    setUserToken('iskjdlhafskj');
-
-   
-    AsyncStorage.setItem('userToken', 'iskjdlhafskj');
-  };
+ 
   const logOut = () => {
     
     AsyncStorage.removeItem('userToken');
@@ -37,7 +32,7 @@ export default function AuthProvider({children}) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{login, logOut,  userToken}}>
+    <AuthContext.Provider value={{logOut,  userToken}}>
       {children}
     </AuthContext.Provider>
   );
